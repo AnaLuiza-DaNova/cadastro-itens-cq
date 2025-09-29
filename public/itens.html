@@ -1,69 +1,139 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 30px;
-        background-color: #f9f9f9;
-        color: #333;
-      }
-    </style>
-  </head>
-  <body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home</title>
+  <style>
+    input {
+      padding: 8px;
+    }
+
+    label {
+      font-size: 15px;
+      color: gray;
+    }
+
+    h1 {
+      color: rgb(17, 109, 196);
+      font-family: fantasy;
+      background-color: rgb(157, 208, 218)
+    }
+
+    ul {
+      list-style: square;
+    }
+
+    li {
+      color: rgb(48, 86, 122);
+    }
+  </style>
+</head>
+
+<body>
+  <center>
     <h1>Visão Geral</h1>
-    <h3>Listagem de pessoas</h3>
+  </center>
+  <h3>Listagem de pessoas</h3>
 
-    <div id="status">Carregando...</div>
-    <div id="lista">
-      <!-- Lista de pessoas será inserida aqui -->
-    </div>
+  <div id="status">Carregando...</div>
+  <div id="lista">
+    <!-- Lista de pessoas será inserida aqui -->
+  </div>
 
-    <div>
-      <button onclick="mostrarFormulario()">➕ Adicionar Pessoa</button>
-    </div>
+  <div>
+    <button onclick="mostrarFormulario()" id="botao">➕ Adicionar Pessoa</button>
+  </div>
 
-    <form>
-      <label>Nome:</label>
-      <input type="text" id="nome" name="nome" required />
+  <form style="display: none;" id="formulario">
+    <label>Nome:</label>
+    <input type="text" id="nome" name="nome" required />
 
-      <label>Login:</label>
-      <input type="text" id="login" name="login" required />
+    <label>Login:</label>
+    <input type="text" id="login" name="login" required />
 
-      <label>Senha:</label>
-      <input type="password" id="senha" name="senha" required />
-    </form>
+    <label>Senha:</label>
+    <input type="password" id="senha" name="senha" required />
+    
+    <button type="submit" onclick="adicionarPessoa()" id="botao2">➕</button>
 
-    <script>
-      async function carregarPessoas() {
-        const response = await fetch("/pessoas");
+  </form> 
 
-        //Atualizar div com id = "status"
-        const elemento = document.getElementById("status");
-        if (!response.ok) {
-          elemento.textContent = "Não foi possível carregar as pessoas.";
-        }
-        elemento.textContent = "Pessoas carregadas com sucesso!";
+  <script>
+    async function carregarPessoas() {
+      const response = await fetch("/pessoas");
 
-        const pessoas = await response.json();
+      //Atualizar div com id = "status"
+      const elemento = document.getElementById("status");
+      if (!response.ok) {
+        elemento.textContent = "Não foi possível carregar as pessoas.";
+      }
+      elemento.textContent = "Pessoas carregadas com sucesso!";
 
-        const container = document.getElementById("lista")
-        const ul = document.createElement('ul')
+      const pessoas = await response.json();
 
-        for(let c=0; c<pessoas.length; c++){
-          const pessoa = pessoas[c]
-          const texto = `NOME: ${pessoa.nome}  -- ${pessoa.login}`
+      const container = document.getElementById("lista")
+      const ul = document.createElement('ul')
 
-          const li = document.createElement("li");
-          li.textContent = texto
-          ul.appendChild(li)
-        }
+      for (let c = 0; c < pessoas.length; c++) {
+        const pessoa = pessoas[c]
+        const texto = `NOME: ${pessoa.nome}  -- ${pessoa.login}`
+
+        const li = document.createElement("li");
+        li.textContent = texto
+        ul.appendChild(li)
+      }
+      container.appendChild(ul)
+    }
+    carregarPessoas();
+
+    function mostrarFormulario() {
+      const formulario = document.getElementById("formulario")
+      const botao = document.getElementById("botao");
+
+      if (formulario.style.display === "none") {
+        botao.innerText = "➖ Ocultar formulário";
+        formulario.style.display = 'block'; 
+        
+      } else {
+        botao.innerText = "➕ Adicionar Pessoa"
+        formulario.style.display = 'none';
+      } 
+    }
+
+    function adicionarPessoa(pessoa) {
+      const nome = document.getElementById("nome").value.trim();
+      const login = document.getElementById("login").value.trim();
+      const senha = document.getElementById("senha").value;
+
+      if(!nome || !senha || !login) {
+        alert ("TUDO ERRADO!")
+        return
+      }
+
+      const novaPessoa = { login, nome };
+
+      const container = document.getElementById("lista");
+      let ul = document.querySelector('ul')
+
+      if (!ul) {
+        ul = document.createElement('ul');
         container.appendChild(ul)
       }
-      carregarPessoas();
-    </script>
-  </body>
+
+      const li = createElement('li')
+      li.textcontent = `Nome: ${pessoa.nome} -- ${pessoa.login}`
+
+      ul.appendChild(li)
+
+      document.getElementById("formulario").reset();
+      mostrarFormulario();
+
+    }
+    
+
+  </script>
+</body>
+
 </html>
