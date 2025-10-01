@@ -55,10 +55,10 @@
 
     <label>Senha:</label>
     <input type="password" id="senha" name="senha" required />
-    
+
     <button type="submit" onclick="adicionarPessoa()" id="botao2">➕</button>
 
-  </form> 
+  </form>
 
   <script>
     async function carregarPessoas() {
@@ -78,11 +78,23 @@
 
       for (let c = 0; c < pessoas.length; c++) {
         const pessoa = pessoas[c]
-        const texto = `NOME: ${pessoa.nome}  -- ${pessoa.login}`
+        const texto = `NOME: ${pessoa.nome}  -- ${pessoa.login}`;
 
         const li = document.createElement("li");
-        li.textContent = texto
+
+        const span = document.createElement("li");
+        span.textContent = texto;
+
+        const botao = document.createElement("button");
+        botao.textContent = "X";
+        botao.style.marginLeft = "10px";
+        botao.onclick = () => deletarPessoa(pessoa.id, li);
+
+        li.appendChild(span);
+        li.appendChild(botao);
         ul.appendChild(li)
+        //li.textContent = texto
+      
       }
       container.appendChild(ul)
     }
@@ -94,45 +106,60 @@
 
       if (formulario.style.display === "none") {
         botao.innerText = "➖ Ocultar formulário";
-        formulario.style.display = 'block'; 
-        
+        formulario.style.display = "block";
+
       } else {
         botao.innerText = "➕ Adicionar Pessoa"
         formulario.style.display = 'none';
-      } 
+      }
     }
 
     function adicionarPessoa(pessoa) {
+      event.preventDefault()
+
       const nome = document.getElementById("nome").value.trim();
       const login = document.getElementById("login").value.trim();
       const senha = document.getElementById("senha").value;
 
-      if(!nome || !senha || !login) {
-        alert ("TUDO ERRADO!")
-        return
+      if (!nome || !senha || !login) {
+        alert("Preencha todos os campos!");
+        return;
       }
 
       const novaPessoa = { login, nome };
 
       const container = document.getElementById("lista");
-      let ul = document.querySelector('ul')
+      let ul = container.querySelector("ul")
 
       if (!ul) {
-        ul = document.createElement('ul');
+        ul = document.createElement("ul");
         container.appendChild(ul)
       }
 
-      const li = createElement('li')
-      li.textcontent = `Nome: ${pessoa.nome} -- ${pessoa.login}`
-
-      ul.appendChild(li)
+      const li = document.createElement("li")
+      li.textContent = `NOME: ${nome} -- ${login}`;
+      ul.appendChild(li);
 
       document.getElementById("formulario").reset();
       mostrarFormulario();
 
     }
-    
 
+    async function deletarPessoa (id, li) {
+      const response = await fetch(`/pessoa/${id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        alert("Pessoas deletadas com sucesso")
+        li.remove()
+      }
+
+      else{
+        alert("Erro ao deletar pessoa")
+      }
+    }
+    
   </script>
 </body>
 
