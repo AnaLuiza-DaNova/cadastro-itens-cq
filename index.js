@@ -144,34 +144,45 @@ app.delete('/pessoa/:id', (req, res) => {
     }
 });
 
-//app.put('pessoa/:id', (req, res) => {
-   // const id = parseInt(req.params.id);
+app.put('/pessoa/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    console.log ("ID: ", id)
 
-   // const pessoa = pessoas.find(p => p.id === id);
+    const pessoa = pessoas.find(p => p.id === id);
+    console.log ("pessoa: ", pessoa)
 
-   // if (!pessoa) {
-  //      return res.status(404).json({ error: 'Usuário não encontrado' });
-  //  }
-   //   }
+    if (!pessoa) {
+        return res.status(404).json({ error: 'Usuário não encontrado' });
+    }
+   
+    const novaPessoa = req.body;
+    console.log ("Antiga pessoa: ", pessoa)
+    console.log ("Nova pessoa: ", novaPessoa)
+    
+    pessoa.nome = novaPessoa.nome
+    pessoa.login = novaPessoa.login
+    pessoa.senha = novaPessoa.senha
+    pessoa.idade = novaPessoa.idade
+    pessoa.irmaos = novaPessoa.irmaos
+    pessoa.cidade = novaPessoa.cidade
+    pessoa.hobby = novaPessoa.hobby
 
-   // const novaPessoa = {
-   //     id: pessoas.length + 1,
-   //     nome,
-  //      login,
-  //      senha
-  //  }
+    pessoas[pessoa.id - 1] = pessoa
 
-    //pessoa.nome = novaPessoa.nome
-    //pessoa.login = novaPessoa.login
-    //pessoa.senha = novaPessoa.senha
-    //pessoa.idade = novaPessoa.idade
-    //pessoa.irmaos = novaPessoa.irmaos
-    //pessoa.cidade = novaPessoa.cidade
-    //pessoa.hobby = novaPessoa.hobby
-    //pessoas[pessoa.id - 1] = pessoa
+    console.log("Pessoas: ", pessoas)
+    res.json(pessoas);
+})
 
-   // res.json(pessoas);
-//})
+app.get("/pessoa/:id", (req, res) => {
+    const id = parseInt(req.params.id);
+    const pessoa = pessoas.find(p => p.id === id);
+
+    if (!pessoa) {
+        return res.status(404).json({error: "Usuário não encontrado"});
+    }
+
+    res.json(pessoa);
+})
 
 app.listen(PORT, () => {
     console.log(`Servidor rodando em http://localhost:${PORT}`);
